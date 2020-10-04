@@ -6,6 +6,7 @@
 
 #include "bench.c"
 #include "bloom.h"
+#include "perf.h"
 #include "tst.h"
 
 #define TableSize 5000000 /* size of bloom filter */
@@ -18,6 +19,10 @@ int REF = INS;
 
 
 #define BENCH_TEST_FILE "bench_ref.txt"
+#define NO_BLOOM_CPY "no_bloom_cpy.txt"
+#define NO_BLOOM_REF "no_bloom_ref.txt"
+#define BLOOM_CPY "bloom_cpy.txt"
+#define BLOOM_REF "bloom_ref.txt"
 
 long poolsize = 2000000 * WRDMAX;
 
@@ -105,6 +110,19 @@ int main(int argc, char **argv)
         tst_free(root);
         free(pool);
         return stat;
+    } else if (argc == 3 && strcmp(argv[1], "--perf") == 0) {
+        int stat1, stat2;
+        if (!CPYmask) { /* CPY */
+            stat1 = no_bloom_filter(root, NO_BLOOM_CPY);
+            stat2 = bloom_filter(root, BLOOM_CPY, bloom);
+        } else { /* REF */
+            stat1 = no_bloom_filter(root, NO_BLOOM_REF);
+            stat2 = bloom_filter(root, BLOOM_REF, bloom);
+        }
+
+        tst_free(root);
+        free(pool);
+        return stat1 & stat2;
     }
 
     FILE *output;

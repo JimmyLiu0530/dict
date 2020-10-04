@@ -24,7 +24,7 @@ $(GIT_HOOKS):
 	@echo
 
 OBJS_LIB = \
-    tst.o bloom.o
+    tst.o bloom.o perf.o
 
 OBJS := \
     $(OBJS_LIB) \
